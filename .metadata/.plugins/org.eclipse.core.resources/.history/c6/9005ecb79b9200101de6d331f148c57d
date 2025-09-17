@@ -1,0 +1,13 @@
+/*
+ * mcp3004.h
+ *
+ *  Created on: Sep 15, 2025
+ *      Author: User
+ */
+
+#ifndef INC_MCP3004_H_
+#define INC_MCP3004_H_
+
+int add(int x, int y);
+
+#endif /* INC_MCP3004_H_ */

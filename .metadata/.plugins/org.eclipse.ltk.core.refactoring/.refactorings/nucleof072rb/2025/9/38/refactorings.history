@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;nucleof072rb/Core/Src/mcp3004&apos; to &apos;mcp3004.c&apos;" description="Rename resource &apos;mcp3004&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Core/Src/mcp3004" name="mcp3004.c" stamp="1757985313411" updateReferences="true"/>
+</session>

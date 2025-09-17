@@ -1,0 +1,28 @@
+/*
+ * motor_controller.h
+ *
+ *  Created on: Sep 16, 2025
+ *      Author: Adrian Tarantino
+ */
+
+#ifndef INC_MOTOR_CONTROLLER_H_
+#define INC_MOTOR_CONTROLLER_H_
+
+#include <stdint.h>
+
+#include "main.h"
+
+typedef struct {
+  TIM_HandleTypeDef *pwm_handler;
+  uint8_t channel;
+  TIM_TypeDef *TIM;
+} motor_controller_hardware_configuration_t;
+
+typedef struct {
+  uint16_t value;
+} motor_controller_data_t;
+
+uint8_t motor_controller_open(motor_controller_hardware_configuration_t *motor_controller_hardware_configuration);
+uint8_t motor_controller_write(motor_controller_hardware_configuration_t *motor_controller_hardware_configuration, motor_controller_data_t *motor_controller_data);
+
+#endif

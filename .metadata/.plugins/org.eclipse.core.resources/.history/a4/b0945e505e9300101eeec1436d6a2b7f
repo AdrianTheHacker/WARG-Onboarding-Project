@@ -1,0 +1,20 @@
+/*
+ * motor_controller.c
+ *
+ *  Created on: Sep 16, 2025
+ *      Author: Adrian Tarantino
+ */
+
+#include <stdint.h>
+
+#include "motor_controller.h"
+
+uint8_t motor_controller_open(motor_controller_hardware_configuration_t *motor_controller_hardware_configuration) {
+  HAL_TIM_PWM_Start(motor_controller_hardware_configuration->pwm_handler, motor_controller_hardware_configuration->channel);
+  return 0;
+}
+
+uint8_t motor_controller_write(motor_controller_hardware_configuration_t *motor_controller_hardware_configuration, motor_controller_data_t *motor_controller_data) {
+  motor_controller_hardware_configuration->TIM = motor_controller_data->value;
+  return 0;
+}
