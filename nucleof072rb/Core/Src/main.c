@@ -20,12 +20,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "mcp3004.h"
+#include "motor_controller.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,12 +53,28 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-SPI_HandleTypeDef mcp3004_handler;
+uint16_t map_mcp3004_output_to_pwm_input(uint16_t mcp3004_output);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+SPI_HandleTypeDef spi_handler;
+TIM_HandleTypeDef pwm_handler;
 
+mcp3004_hardware_configuration_t mcp3004_hardware_configuration = {
+  .control_gpio_pin = Control_Pin,
+  .control_gpio_port = Control_GPIO_Port,
+  .spi_handler = &spi_handler
+};
+
+motor_controller_hardware_configuration_t motor_controller_hardware_configuration = {
+  .channel = TIM_CHANNEL_1,
+  .pwm_handler = &pwm_handler,
+  .TIM = TIM1
+};
+
+mcp3004_data_t mcp3004_data;
+motor_controller_data_t motor_controller_data;
 /* USER CODE END 0 */
 
 /**
@@ -67,7 +85,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  HAL_SPI_MspInit(&mcp3004_handler);
+  // HAL_SPI_MspInit(&spi_handler);
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -90,9 +108,12 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_SPI1_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-
+  mcp3004_open(&mcp3004_hardware_configuration);
+  motor_controller_open(&motor_controller_hardware_configuration);
   /* USER CODE END 2 */
+
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -102,6 +123,11 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+    mcp3004_select_channel(&mcp3004_hardware_configuration, 0);
+    mcp3004_read(&mcp3004_hardware_configuration, &mcp3004_data);
+    motor_controller_data.value = map_mcp3004_output_to_pwm_input(mcp3004_data.value);
+    motor_controller_write(&motor_controller_hardware_configuration, &motor_controller_data);
+    HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
@@ -148,6 +174,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+uint16_t map_mcp3004_output_to_pwm_input(uint16_t mcp3004_output) {
+  return (mcp3004_output * 255) / 1023;
+}
 
 /* USER CODE END 4 */
 
